@@ -92,7 +92,7 @@ def overview_vecs(cache_path):
     print("shepe of vectors:")
     print(shape_list)
 
-def visualize_vectors(vecs_file_path):
+def visualize_vectors(vecs_file_path, save_path=None):
     vecs = prj_control.load_result(vecs_file_path)
     vecs = np.stack(vecs)
     pca = PCA(n_components=2,svd_solver='full')
@@ -103,6 +103,8 @@ def visualize_vectors(vecs_file_path):
     plt.xlim = XY_range
     plt.ylim = XY_range
     plt.show()
+    if save_path != None:
+        plt.savefig(save_path)
 
 def collect_data(cache_path, store_path="./results"):
     labels = []
