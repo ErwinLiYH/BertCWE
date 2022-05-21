@@ -116,10 +116,10 @@ def collect_data(cache_path, store_path="./results"):
             final_vecs.append(j)
             labels.append(i)
     final_vecs = np.stack(final_vecs)
-    prj_control.store_result(os.path.join(store_path, "labels"), labels)
-    print("save all vectors to %s"%os.path.join(store_path, "labels"))
-    prj_control.store_result(os.path.join(store_path, "final_vecs"), final_vecs)
-    print("save labels to %s"%os.path.join(store_path, "final_vecs"))
+    prj_control.store_result(os.path.join(store_path, "labels_bert_all"), labels)
+    print("save all vectors to %s"%os.path.join(store_path, "labels__bert_all"))
+    prj_control.store_result(os.path.join(store_path, "final_vecs_bert_all"), final_vecs)
+    print("save labels to %s"%os.path.join(store_path, "final_vecs_bert_all"))
 
 
 def compress_vectors(cache_path, store_path="./results", n = 10):
@@ -150,9 +150,9 @@ def compress_vectors(cache_path, store_path="./results", n = 10):
                 labels.append(i)
 
     final_vecs = np.stack(final_vecs)
-    prj_control.store_result(os.path.join(store_path, "labels_%d"%n), labels)
-    print("save all vectors to %s"%os.path.join(store_path, "labels_%d"%n))
-    prj_control.store_result(os.path.join(store_path, "final_vecs_%d"%n), final_vecs)
-    print("save labels to %s"%os.path.join(store_path, "final_vecs_%d"%n))
+    prj_control.store_result(os.path.join(store_path, "labels_bert_%d"%n), labels)
+    print("save all vectors to %s"%os.path.join(store_path, "labels_bert_%d"%n))
+    prj_control.store_result(os.path.join(store_path, "final_vecs_bert_%d"%n), final_vecs)
+    print("save labels to %s"%os.path.join(store_path, "final_vecs_bert_%d"%n))
 
 # get_loca_from_ids(['[CLS]', 'i', 'love', '##ddd', '##asd', 'tf', 'you', '##are', '[SEP]'], ['i', 'love', 'lovedddasd', 'tf', 'youare'])
