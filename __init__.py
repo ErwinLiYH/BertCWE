@@ -153,8 +153,8 @@ def compress_vectors(cache_path, store_path="./results", n = 10):
     final_vecs = np.stack(final_vecs)
     prj_control.store_result(os.path.join(store_path, "labels_bert_%d"%n), labels)
     print("save all vectors to %s"%os.path.join(store_path, "labels_bert_%d"%n))
-    prj_control.store_result(os.path.join(store_path, "final_vecs_bert_%d"%n), final_vecs)
-    print("save labels to %s"%os.path.join(store_path, "final_vecs_bert_%d"%n))
+    prj_control.store_result(os.path.join(store_path, "vecs_bert_%d"%n), final_vecs)
+    print("save labels to %s"%os.path.join(store_path, "vecs_bert_%d"%n))
 
 def PC_vectors(cache_path, store_path="./results", n = 1):
     cache_list = []
@@ -179,7 +179,7 @@ def PC_vectors(cache_path, store_path="./results", n = 1):
     final_vecs = np.stack(final_vecs)
     prj_control.store_result(os.path.join(store_path, "labels_bert_PC%d"%n), labels)
     print("save all vectors to %s"%os.path.join(store_path, "labels_bert_PC%d"%n))
-    prj_control.store_result(os.path.join(store_path, "final_vecs_bert_PC%d"%n), final_vecs)
-    print("save labels to %s"%os.path.join(store_path, "final_vecs_bert_PC%d"%n))
+    prj_control.store_result(os.path.join(store_path, "vecs_bert_PC%d"%n), final_vecs)
+    print("save labels to %s"%os.path.join(store_path, "vecs_bert_PC%d"%n))
 
 # get_loca_from_ids(['[CLS]', 'i', 'love', '##ddd', '##asd', 'tf', 'you', '##are', '[SEP]'], ['i', 'love', 'lovedddasd', 'tf', 'youare'])
