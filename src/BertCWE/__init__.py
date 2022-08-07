@@ -154,13 +154,18 @@ def compress_vectors(cache_path, store_path="./results", n = 10):
         cluster = AgglomerativeClustering(n_clusters = n)
         for i in tqdm(cache_list):
             vecs = prj_control.load_result(os.path.join(cache_path, i))
-            vecs = np.stack(vecs)
-            cluster_label = cluster.fit_predict(vecs)
-            for j in range(n):
-                temp_vec = vecs[np.where(cluster_label == j)]
-                temp_vec = np.mean(temp_vec, axis=0)
-                final_vecs.append(temp_vec)
-                labels.append(i)
+            if len(vecs) <= n:
+                for j in vecs:
+                    labels.append(i)
+                    final_vecs.append(j)
+            else:
+                vecs = np.stack(vecs)
+                cluster_label = cluster.fit_predict(vecs)
+                for j in range(n):
+                    temp_vec = vecs[np.where(cluster_label == j)]
+                    temp_vec = np.mean(temp_vec, axis=0)
+                    final_vecs.append(temp_vec)
+                    labels.append(i)
 
     final_vecs = np.stack(final_vecs)
     prj_control.store_result(os.path.join(store_path, "labels_bert_%d"%n), labels)
