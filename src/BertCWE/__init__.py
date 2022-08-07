@@ -19,24 +19,31 @@ class BertModel:
         self.model = transformers.BertForMaskedLM.from_pretrained(MODEL)
         self.tokenizer = transformers.BertTokenizer.from_pretrained(TOKENIZER)
     
-    def create_bert_vectors(self, target_voca, commends, cache_path, layer=0):
-        for commend in tqdm(commends):
-            encoded = self.tokenizer.encode_plus(commend, return_tensors="pt", return_token_type_ids = False, return_attention_mask = False)
-            input_ids = encoded.input_ids.squeeze()
-            tokens = self.tokenizer.convert_ids_to_tokens(input_ids)
-            loca_dict = get_loca_from_ids(tokens, target_voca)
+    def create_bert_vectors(self, target_voca, comments, cache_path, layer=0):
+        for comment in tqdm(comments):
+            self.__bert_parse_comment(self, target_voca=target_voca, comment=comment, cache_path=cache_path, layer=layer)
+        result_dic = overview_vecs(cache_path, False)
+        for i in [j for j in target_voca if i not in list(result_dic.keys())]:
+            print("%s not in comments, transfer it by itself directly"%i)
+            self.__bert_parse_comment(self, target_voca=target_voca, comment=i, cache_path=cache_path, layer=layer)
 
-            raw_vectors = self.model(input_ids.unsqueeze(dim=0), output_hidden_states = True).hidden_states[layer]
-            vec_dic = {}
-            for k,v in loca_dict.items():
-                vec = raw_vectors[0][v[0]:v[-1]+1]
-                if vec.shape[0] != 1:
-                    vec = torch.mean(vec, dim=0)
-                else:
-                    vec = vec.squeeze()
-                vec = vec.detach().numpy()
-                vec_dic[k] = vec
-            store_vec(vec_dic, cache_path)
+    def __bert_parse_comment(self, target_voca, comment, cache_path, layer):
+        encoded = self.tokenizer.encode_plus(comment, return_tensors="pt", return_token_type_ids = False, return_attention_mask = False)
+        input_ids = encoded.input_ids.squeeze()
+        tokens = self.tokenizer.convert_ids_to_tokens(input_ids)
+        loca_dict = get_loca_from_ids(tokens, target_voca)
+
+        raw_vectors = self.model(input_ids.unsqueeze(dim=0), output_hidden_states = True).hidden_states[layer]
+        vec_dic = {}
+        for k,v in loca_dict.items():
+            vec = raw_vectors[0][v[0]:v[-1]+1]
+            if vec.shape[0] != 1:
+                vec = torch.mean(vec, dim=0)
+            else:
+                vec = vec.squeeze()
+            vec = vec.detach().numpy()
+            vec_dic[k] = vec
+        store_vec(vec_dic, cache_path)
 
 def store_vec(vec_dic, cache_path):
     cache_list = []
@@ -75,10 +82,11 @@ def get_loca_from_ids(input_ids, tokens):
             pass
     return result
 
-def overview_vecs(cache_path):
+def overview_vecs(cache_path, verbose=True):
     cache_list = os.listdir(cache_path)
     num_of_vecs = []
     shape_list = []
+    result_dic = {}
     for i in tqdm(cache_list):
         l = prj_control.load_result(os.path.join(cache_path, i))
         for j in l:
@@ -88,10 +96,14 @@ def overview_vecs(cache_path):
     info_str = "total vocabulary: %d\ntotal vectors: %d\n----------------\n"%(len(cache_list), sum(num_of_vecs))
     for i in range(len(cache_list)-1):
         info_str+="%s: %d\n"%(cache_list[i], num_of_vecs[i])
+        result_dic[cache_list[i]] = num_of_vecs[i]
     info_str+="%s: %d\n"%(cache_list[-1], num_of_vecs[-1])
-    print(info_str)
-    print("shepe of vectors:")
-    print(shape_list)
+    result_dic[cache_list[-1]] = num_of_vecs[-1]
+    if verbose:
+        print(info_str)
+        print("shepe of vectors:")
+        print(shape_list)
+    return result_dic
 
 def visualize_vectors(vecs_file_path, save_path=None):
     vecs = prj_control.load_result(vecs_file_path)

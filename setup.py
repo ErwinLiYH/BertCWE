@@ -5,7 +5,7 @@ import setuptools
 
 setuptools.setup(
     name="BertCWE",
-    version="2.0.0",
+    version="2.1.0",
     author="ErwinLi",
     author_email="1779599839@qq.com",
     description="Bert contextual word embedding",
