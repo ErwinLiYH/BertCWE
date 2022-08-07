@@ -21,11 +21,11 @@ class BertModel:
     
     def create_bert_vectors(self, target_voca, comments, cache_path, layer=0):
         for comment in tqdm(comments):
-            self.__bert_parse_comment(self, target_voca=target_voca, comment=comment, cache_path=cache_path, layer=layer)
+            self.__bert_parse_comment(target_voca=target_voca, comment=comment, cache_path=cache_path, layer=layer)
         result_dic = overview_vecs(cache_path, False)
         for i in [j for j in target_voca if i not in list(result_dic.keys())]:
             print("%s not in comments, transfer it by itself directly"%i)
-            self.__bert_parse_comment(self, target_voca=target_voca, comment=i, cache_path=cache_path, layer=layer)
+            self.__bert_parse_comment(target_voca=target_voca, comment=i, cache_path=cache_path, layer=layer)
 
     def __bert_parse_comment(self, target_voca, comment, cache_path, layer):
         encoded = self.tokenizer.encode_plus(comment, return_tensors="pt", return_token_type_ids = False, return_attention_mask = False)
