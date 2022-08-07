@@ -23,7 +23,7 @@ class BertModel:
         for comment in tqdm(comments):
             self.__bert_parse_comment(target_voca=target_voca, comment=comment, cache_path=cache_path, layer=layer)
         result_dic = overview_vecs(cache_path, False)
-        for i in [j for j in target_voca if i not in list(result_dic.keys())]:
+        for i in [j for j in target_voca if j not in list(result_dic.keys())]:
             print("%s not in comments, transfer it by itself directly"%i)
             self.__bert_parse_comment(target_voca=target_voca, comment=i, cache_path=cache_path, layer=layer)
 
